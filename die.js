@@ -16,7 +16,7 @@ function Die(context){
     this.slider2.value = 0
 }
 
-
+// NOTE: Using for debugging, from lecture
 Die.prototype.draw3DAxes = function(color,TxU,scale) {
     var Tx = mat4.clone(TxU);
     mat4.scale(Tx,Tx,[scale,scale,scale]);
@@ -58,7 +58,6 @@ Die.prototype.drawDie = function(color, TxU, scale) {
     mat4.scale(Tx,Tx,[scale,scale,scale]);
     this.context.strokeStyle = color;
 
-
     mat4.translate(Tx, Tx, [0,0,0])
     
     this.context.beginPath()
@@ -85,7 +84,6 @@ Die.prototype.draw = function() {
 
     var Tcanvas_to_die = mat4.create()
 
-    this.drawDie("red", Tcanvas_to_die, this.slider1)
     var TlookAtCamera = this.drawCamera()
 
     // (orthographic for now)
@@ -109,6 +107,9 @@ Die.prototype.draw = function() {
 
 
     this.draw3DAxes("black", tVP_PROJ_VIEW_Camera, 100)
+
+    this.drawDie("red", tVP_PROJ_VIEW_Camera, 100)
+
 }
 
 Die.prototype.update = function() {
