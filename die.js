@@ -60,16 +60,44 @@ Die.prototype.drawDie = function(color, TxU, scale) {
 
     mat4.translate(Tx, Tx, [0,0,0])
     
+
+    /* NOTE: The descriptions on the right are when the square is first loaded */
     this.context.beginPath()
-    this.moveToTx([0,0,0], Tx); this.lineToTx([0,1,1], Tx); this.moveToTx([0,0,0], Tx)
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,1,1], Tx); this.lineToTx([.5,1,1], Tx) // x top left
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,-1,1], Tx); this.lineToTx([.5,-1,1], Tx) // x bottom left
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,1,-1], Tx); this.lineToTx([.5,1,-1], Tx) // x top right
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,-1,-1], Tx); this.lineToTx([.5,-1,-1], Tx) // x bottom right
+
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,1,1], Tx); this.lineToTx([-.5,-1,1], Tx) // y front left
+    this.moveToTx([0,0,0], Tx); this.moveToTx([.5,1,1], Tx); this.lineToTx([.5,-1,1], Tx) // y front right
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,-1,-1], Tx); this.lineToTx([-.5,1,-1], Tx) // y back left
+    this.moveToTx([0,0,0], Tx); this.moveToTx([.5,-1,-1], Tx); this.lineToTx([.5,1,-1], Tx) // y back right
+    
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,1,1], Tx); this.lineToTx([-.5,1,-1], Tx) // z top left
+    this.moveToTx([0,0,0], Tx); this.moveToTx([.5,1,1], Tx); this.lineToTx([.5,1,-1], Tx) // z top right
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,-1,1], Tx); this.lineToTx([-.5,-1,-1], Tx) // z bottom left
+    this.moveToTx([0,0,0], Tx); this.moveToTx([.5,-1,1], Tx); this.lineToTx([.5,-1,-1], Tx) // z bottom right
+
+
+    // Fills
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,1,1], Tx); this.lineToTx([.5,1,1], Tx); this.lineToTx([.5,-1,1], Tx); this.lineToTx([-.5,-1,1], Tx); this.context.closePath(); this.context.fill(); // Front
+    
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,1,-1], Tx); this.lineToTx([.5,1,-1], Tx); this.lineToTx([.5,-1,-1], Tx); this.lineToTx([-.5,-1,-1], Tx); this.context.closePath(); this.context.fill(); // Back
+
+    this.moveToTx([0,0,0], Tx); this.moveToTx([-.5,1,1], Tx); this.lineToTx([-.5,1,-1], Tx); this.lineToTx([-.5,-1,-1], Tx); this.lineToTx([-.5,-1,1], Tx); this.context.closePath(); this.context.fill(); // Left
+
+    this.moveToTx([0,0,0], Tx); this.moveToTx([.5,1,1], Tx); this.lineToTx([.5,1,-1], Tx); this.lineToTx([.5,-1,-1], Tx); this.lineToTx([.5,-1,1], Tx); this.context.closePath(); this.context.fill(); // Right
+
+
     this.context.stroke()
+
 
 }
 
 
 Die.prototype.drawCamera = function() {
 
-    var eyeCamera = [10,10,10] // TODO:
+    var eyeCamera = [this.slider2*Math.sin(this.slider1),10,this.slider2*Math.cos(this.slider1)] // TODO:
     var targetCamera = vec3.fromValues(1,0,0) // Where we are looking
     var upCamera = vec3.fromValues(0,5,0)
 
@@ -88,7 +116,7 @@ Die.prototype.draw = function() {
 
     // (orthographic for now)
     var TprojectionCamera = mat4.create();
-    mat4.ortho(TprojectionCamera,-100,100,-100,100,-1,1);
+    mat4.ortho(TprojectionCamera,-100,100,-150,100,-1,1);
     //mat4.perspective(TprojectionCamera,Math.PI/4,1,-1,1); // Use for perspective teaser!
     
     // Create ViewPort transform (assumed the same for both canvas instances)
@@ -108,12 +136,13 @@ Die.prototype.draw = function() {
 
     this.draw3DAxes("black", tVP_PROJ_VIEW_Camera, 100)
 
-    this.drawDie("red", tVP_PROJ_VIEW_Camera, 100)
+    this.drawDie("red", tVP_PROJ_VIEW_Camera, 50)
 
 }
 
-Die.prototype.update = function() {
+Die.prototype.update = function(slider1, slider2) {
 
-    this.slider1 = slider1
+    this.slider1 = slider1 * .02 * Math.PI
+    this.slider2 = slider2
 
 }
